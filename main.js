@@ -16,13 +16,6 @@ class Game {
     this.#currentSymbol = "X";
   }
 
-  display() {
-    console.log(
-      this.#currentSymbol,
-      this.#board
-    );
-  }
-
   updateBoard(id) {
     this.#board[id] = this.#currentSymbol;
   }
@@ -38,13 +31,29 @@ class Game {
   get currentSymbol() {
     return this.#currentSymbol;
   }
+
+  get isWon() {
+    const winPatterns = [
+      [0, 1, 2], [3, 4, 5], [6, 7, 8],
+      [0, 3, 6], [1, 4, 7], [2, 5, 8],
+      [0, 4, 8], [2, 4, 6]
+    ];
+
+    return winPatterns.some((pattern) => {
+      return this.#board[pattern[0]] !== "" && pattern.every(pos => this.#board[pos] === this.#board[pattern[0]]);
+    });
+  }
+
+  get isDraw() {
+    return this.#board.every(cell => cell !== "");
+  }
 }
 
 const runGame = () => {
   const game = new Game("Me", "You");
   const board = document.querySelector(".board");
 
-  board.addEventListener("click", (e) => {
+  const handleMove = (e) => {
     const id = parseInt(e.target.id);
 
     if (!game.isCellOccupied(id) && e.target.className === "cell") {
@@ -52,7 +61,18 @@ const runGame = () => {
       game.updateBoard(id);
       game.toggleSymbol();
     }
-  });
+
+    if (game.isWon) {
+      console.log("Match Won");
+      board.removeEventListener("click", handleMove);
+    }
+
+    if (game.isDraw) {
+      console.log("Game completed...");
+    }
+  };
+
+  board.addEventListener("click", handleMove);
 };
 
 window.onload = runGame;
