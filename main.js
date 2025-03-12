@@ -4,14 +4,10 @@ const debug = (args) => {
 };
 
 class Game {
-  #player1;
-  #player2;
   #board;
   #currentSymbol;
 
-  constructor(player1, player2) {
-    this.#player1 = player1;
-    this.#player2 = player2;
+  constructor() {
     this.#board = ["", "", "", "", "", "", "", "", ""];
     this.#currentSymbol = "X";
   }
@@ -50,7 +46,7 @@ class Game {
 }
 
 const runGame = () => {
-  const game = new Game("Me", "You");
+  const game = new Game();
   const board = document.querySelector(".board");
 
   const handleMove = (e) => {
@@ -59,17 +55,20 @@ const runGame = () => {
     if (!game.isCellOccupied(id) && e.target.className === "cell") {
       e.target.innerText = game.currentSymbol;
       game.updateBoard(id);
+
+      if (game.isWon) {
+        console.log("Match Won");
+        console.log(`Player ${game.currentSymbol} Won The Game`);
+        board.removeEventListener("click", handleMove);
+      }
+
+      if (game.isDraw) {
+        console.log("Game completed...");
+      }
+
       game.toggleSymbol();
     }
 
-    if (game.isWon) {
-      console.log("Match Won");
-      board.removeEventListener("click", handleMove);
-    }
-
-    if (game.isDraw) {
-      console.log("Game completed...");
-    }
   };
 
   board.addEventListener("click", handleMove);
