@@ -43,19 +43,9 @@ class Game {
   }
 }
 
-const winnerMsg = (winner) => console.log(`Player ${winner} Won the game`);
-
 const removeFont = (board) => {
-  const fontDisappear = [
-    { fontSize: "36px", opacity: 1 },
-    { fontSize: "0px", opacity: 0 },
-  ];
-
-  const fontDisappearTiming = {
-    duration: 1000,
-    iterations: 1,
-    easing: "ease-in",
-  };
+  const fontDisappear = [{ fontSize: "36px" }, { fontSize: "0px" }];
+  const fontDisappearTiming = { duration: 1000, easing: "ease-in" };
 
   [...board.children].forEach(child => {
     child.animate(fontDisappear, fontDisappearTiming);
@@ -64,6 +54,25 @@ const removeFont = (board) => {
       child.textContent = "";
     }, 900);
   });
+};
+
+const showWonSymbol = (symbol) => {
+  const displayBox = document.querySelector(".winner-symbol");
+  const animation = [{ fontSize: "0px" }, { opacity: 1, fontSize: "300px" }];
+  const animationTiming = { duration: 800, delay: 900, fill: "forwards" };
+  displayBox.textContent = symbol;
+
+  displayBox.animate(animation, animationTiming);
+};
+
+const removeBoard = (board) => {
+  const boardDisapper = [{ opacity: 0 }];
+  const boardDisapperTimings = { duration: 1000 };
+
+  board.animate(boardDisapper, boardDisapperTimings);
+  setTimeout(() => {
+    board.style.display = "none";
+  }, 900);
 };
 
 const runGame = () => {
@@ -79,7 +88,8 @@ const runGame = () => {
     game.updateBoard(id);
 
     if (game.isWon) {
-      winnerMsg(game.currentSymbol);
+      removeBoard(board);
+      showWonSymbol(game.currentSymbol);
 
       board.removeEventListener("click", handleMove);
       return;
@@ -87,7 +97,6 @@ const runGame = () => {
 
     if (game.isDraw) {
       removeFont(board);
-
       game.resetBoard();
       console.log("Game Draw...");
 
