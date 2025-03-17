@@ -66,7 +66,7 @@ const showWonSymbol = (symbol) => {
 };
 
 const removeBoard = (board) => {
-  const boardDisapper = [{ opacity: 0 }];
+  const boardDisapper = [{ opacity: 0}];
   const boardDisapperTimings = { duration: 1000 };
 
   board.animate(boardDisapper, boardDisapperTimings);
